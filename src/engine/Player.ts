@@ -86,8 +86,16 @@ export class Player {
 	bet(amount : number) {
 		this.chips -= amount;
 		this.roundBetAmount += amount;
+
+		// Set all-in flag.
+		if (this.chips == 0) {
+			this.isAllIn = true;
+			this.hasChecked = false;
+			this.hasFolded = false;
+		}
+
 		this.hasPlayed = true;
-		console.log(`${this.name} bet ${amount}.`);
+		console.log(`${this.name} bet ${amount}. ${this.chips == 0 ? "All in!" : ""}`);
 	}
 
 	canPlay() {

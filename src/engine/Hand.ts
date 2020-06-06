@@ -1,6 +1,8 @@
 import { Player } from "./Player";
 import { Action, Type as ActionType } from "./Action";
 import { Deck } from "./cards/Deck";
+import { Pot } from "./Pot";
+import { Card } from "./cards/Card";
 
 export enum Status {
 	Waiting = 0,
@@ -32,10 +34,12 @@ export class Hand {
 	// Turns
 	currentTurn: number;
 	currentBetAmount: number;
-	pot: number;
+	pots: Pot[];
+	currentPot: Pot;
 	
 	// Cards
 	deck: Deck;
+	cardsOnTable: Card[];
 
 	constructor(players : Player[], dealerIndex: number, bigBlindIndex : number, smallBlindIndex: number, blindAmount: number) {
 		this.stage = Stage.PreFlop;
@@ -47,8 +51,10 @@ export class Hand {
 		this.blindAmount = blindAmount;
 		this.currentTurn = -1;
 		this.currentBetAmount = 0;
-		this.pot = 0;
+		this.pots = [];
+		this.currentPot = new Pot(this.players);
 		this.deck = new Deck(true);
+		this.cardsOnTable = [];
 	}
 
 	start() {
@@ -57,7 +63,7 @@ export class Hand {
 		this.currentBetAmount = this.blindAmount * 2; // Blind amount indicates small blind
 
 		// Set the pot to the initial blinds (don't add the small blind if it's not being used)
-		this.pot = (this.blindAmount * 2) + (this.smallBlindIndex == -1 ? 0 : this.blindAmount);
+		this.currentPot.setAmount((this.blindAmount * 2) + (this.smallBlindIndex == -1 ? 0 : this.blindAmount));
 
 		// Reset all players.
 		this.resetPlayers(true);
@@ -92,19 +98,36 @@ export class Hand {
 		});
 	}
 
-	private startNextStage() {
-		// Advance the stage.
-		this.stage++;
+	private addCardsOnTable() {
+		// Prevent adding too many cards.
+		if (this.stage == Stage.PreFlop || this.stage == Stage.Result || this.cardsOnTable.length >= 5)
+			return;
 
+		for (var i = 0; i < (this.stage == Stage.Flop ? 3 : 1); i++) this.cardsOnTable.push(this.deck.pick()!);
+		console.log(`The cards on the table are: ${this.cardsOnTable}`);
+	}
+
+	private startNextStage() {
 		// Count number of players still in the game (must end if all but one have folded)
-		let playersFolded = this.players.reduce<number>((previous, current, index) => previous + (current.hasFolded ? 1 : 0), 0);
+		let playersFolded = this.players.reduce<number>((previous, current) => previous + (current.hasFolded ? 1 : 0), 0);
 
 		// End the hand if we're either at the result stage or if we have only one player left (or less :/)
-		if (this.stage == Stage.Result || playersFolded >= this.players.length - 1) {
+		if (this.stage == Stage.River || playersFolded >= this.players.length - 1) {
 			console.log("Show your cards!");
 			this.status = Status.Finished;
 			return;
 		}
+
+		// Check if all players are either folded or all-in.
+		let totalPlayersAllIn = this.players.reduce<number>((previous, current) => previous + (current.isAllIn ? 1 : 0), 0);
+		if (totalPlayersAllIn + playersFolded == this.players.length) {
+			console.log("Now simulating the rest of the game (no more turns).");
+			return;
+		}
+		
+		// Advance the stage.
+		this.stage++;
+		this.addCardsOnTable();
 
 		// Reset players & bet amounts.
 		this.resetPlayers(false);
@@ -112,6 +135,14 @@ export class Hand {
 
 		// Set the new turn to after the dealer.
 		this.currentTurn = (this.dealerIndex + 1) % this.players.length;
+
+		// Get the players that are still active and add them to the next pot.
+		let activePlayers = this.currentPot.getActivePlayers();
+		if (activePlayers.length > 0 && this.currentPot.getNumAllInPlayers() > 0) {
+			console.log("New pot has been created.");
+			this.pots.push(this.currentPot);
+			this.currentPot = new Pot(activePlayers);
+		}
 
 		// Log the new stage
 		console.log(`New stage: ${Stage[this.stage]}.`);
@@ -153,14 +184,13 @@ export class Hand {
 
 				// Don't allow calling unless the player has enough money to call. (All-in action is separate)
 				if (player.chips < amountToCall) {
-					//player.goAllIn();
 					console.log(`${player.name} cannot call as they don't have enough money.`);
 					return;
 				}
 
 				// Call the difference between current bet and and the amount of money the player has already bet.
 				player.bet(amountToCall);
-				this.pot += amountToCall;
+				this.currentPot.setAmount(this.currentPot.amount + amountToCall);
 				break;
 			}
 			case ActionType.Raise: {
@@ -172,7 +202,7 @@ export class Hand {
 
 				// TODO: Don't allow raising when all other players active in this round (not folded or all-in previous rounds) are all in.
 				// Don't allow raising less than the blind, the current amount or raising less than double the previous bet.
-				if (action.amount! < this.blindAmount * 2 && action.amount! < this.currentBetAmount * 2) {
+				if (action.amount! < this.blindAmount * 2 || action.amount! < this.currentBetAmount * 2) {
 					console.log(`${player.name} cannot raise to ${action.amount!} - Invalid amount.`);
 					return;
 				}
@@ -180,7 +210,7 @@ export class Hand {
 				// Calculate the difference between how much the player has already bet and the amount they specified.
 				let amountToRaise = action.amount! - player.roundBetAmount;
 
-				// Don't allow raising unless the player has enough money to raise. (All-in action is separate)
+				// Don't allow raising unless the player has enough money to raise.
 				if (player.chips < amountToRaise) {
 					console.log(`${player.name} cannot raise to ${action.amount!} as they don't have enough money.`);
 					return;
@@ -189,7 +219,20 @@ export class Hand {
 				// Raise to the difference between how much the player has already bet and their raise amount.
 				player.bet(amountToRaise);
 				this.currentBetAmount = action.amount!;	// Set the current bet amount to the total raise amount.
-				this.pot += amountToRaise; // Only add the difference to the pot (!)
+				this.currentPot.setAmount(this.currentPot.amount + amountToRaise); // Only add the difference to the pot (!)
+				break;
+			}
+			case ActionType.AllIn: {
+				// Make the player bet this amount and add it to the pot.
+				let amountAllIn = player.chips;
+				player.bet(amountAllIn);
+				this.currentPot.setAmount(this.currentPot.amount + amountAllIn);
+
+				// Only increase the current bet amount if the all in amount is larger than the current bet.
+				if (amountAllIn > this.currentBetAmount) {
+					this.currentBetAmount = amountAllIn;
+				}
+
 				break;
 			}
 			default: {

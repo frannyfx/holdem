@@ -10,7 +10,6 @@ import { Table } from "./engine/Table";
 import { Action, Type as ActionType} from "./engine/Action";
 
 // Handle input
-/*
 import readline from "readline";
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -20,8 +19,8 @@ const rl = readline.createInterface({
 // Create table
 let table = new Table(9, 2500);
 let player1 = new Player("Player 1", 100000);
-let player2 = new Player("Player 2", 100000);
-let player3 = new Player("Player 3", 100000);
+let player2 = new Player("Player 2", 200000);
+let player3 = new Player("Player 3", 200000);
 
 table.addPlayer(player1);
 table.addPlayer(player2);
@@ -56,6 +55,10 @@ function askForMove() {
 					hand.takeTurn(currentPlayer, { type: ActionType.Raise, amount });
 					break;
 				}
+				case "allin": {
+					hand.takeTurn(currentPlayer, { type: ActionType.AllIn});
+					break;
+				}
 				default: {
 					console.log("Invalid command.");
 				}
@@ -70,21 +73,20 @@ function askForMove() {
 
 async function init() {
 	table.startNewHand();
-
-
-
 	await askForMove();
 }
 
-//init();
-*/
+init();
 
+
+/*
 import { detect } from "./engine/detection";
 import { Ranks } from "./engine/cards/Rank";
 import { Suits } from "./engine/cards/Suit";
 
 let detection = detect([new Card(Ranks.Seven, Suits.Clubs), new Card(Ranks.Ace, Suits.Hearts), new Card(Ranks.Two, Suits.Hearts), new Card(Ranks.Three, Suits.Diamonds), new Card(Ranks.Four, Suits.Diamonds), new Card(Ranks.Nine, Suits.Diamonds)])
 console.log(detection);
+*/
 
 /*
 table.getHand()!.takeTurn(player1, {
