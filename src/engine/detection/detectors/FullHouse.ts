@@ -1,5 +1,7 @@
+// Imports
 import { Card, groupCardsByRank } from "../../cards/Card";
 import { Detection } from "../Detection";
+import { HandType } from "../HandType";
 
 export const BaseValue = 6000;
 
@@ -11,7 +13,7 @@ export const BaseValue = 6000;
 export function detect(cards : Card[]) : Detection {
 	// Impossible to have a full house with less than 5 cards.
 	if (cards.length < 5) {
-		return { result: false };
+		return { type: HandType.FullHouse, result: false };
 	}
 
 	// Group the cards by rank.
@@ -24,7 +26,7 @@ export function detect(cards : Card[]) : Detection {
 	
 	// Only detect a full house if we definitely have a set and we definitely have at least a separate pair.
 	if (definiteSets.length == 0 || potentialSets.length < 2)
-		return { result: false };
+		return { type: HandType.FullHouse, result: false };
 	
 	// If we only have groups of 3 or more...
 	if (definiteSets.length - potentialSets.length == 0 && definiteSets.length > 1) {
@@ -32,6 +34,7 @@ export function detect(cards : Card[]) : Detection {
 		let sortedValues = definiteSets.map(set => parseInt(set)).sort((a, b) => b - a);
 
 		return {
+			type: HandType.FullHouse,
 			result: true,
 			cards: [...rankGroups[sortedValues[0].toString()].slice(0, 3), ...rankGroups[sortedValues[1].toString()].slice(0, 2)],
 			value: BaseValue + sortedValues[0]
@@ -45,6 +48,7 @@ export function detect(cards : Card[]) : Detection {
 		let sortedPairs = definitePairs.map(set => parseInt(set)).sort((a, b) => b - a);
 
 		return {
+			type: HandType.FullHouse,
 			result: true,
 			cards: [...rankGroups[sortedSets[0].toString()].slice(0, 3), ...rankGroups[sortedPairs[0].toString()].slice(0, 2)],
 			value: BaseValue + sortedSets[0]
@@ -52,6 +56,6 @@ export function detect(cards : Card[]) : Detection {
 		
 	}
 
-	return { result: false };
+	return { type: HandType.FullHouse, result: false };
 }
 

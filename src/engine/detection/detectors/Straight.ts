@@ -1,6 +1,8 @@
+// Imports
 import { Card } from "../../cards/Card";
 import { Detection } from "../Detection";
 import { Ranks } from "../../cards/Rank";
+import { HandType } from "../HandType";
 
 export const BaseValue = 4000;
 
@@ -12,7 +14,7 @@ export const BaseValue = 4000;
 export function detect(cards : Card[]) : Detection {
 	// Impossible to have a straight with less than 5 cards.
 	if (cards.length < 5) {
-		return { result: false };
+		return { type: HandType.Straight, result: false };
 	}
 
 	// Sort the cards by their rank.
@@ -48,12 +50,13 @@ export function detect(cards : Card[]) : Detection {
 		let straightCards = continuousCards.slice(Math.max(continuousCards.length - 5, 0));
 
 		return {
+			type: HandType.Straight,
 			result: true,
 			cards: straightCards,
 			value: BaseValue + straightCards[straightCards.length - 1].rank.value
 		};
 	}
 
-	return { result: false };
+	return { type: HandType.Straight, result: false };
 }
 

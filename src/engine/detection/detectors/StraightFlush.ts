@@ -1,7 +1,9 @@
+// Imports
 import { Card } from "../../cards/Card";
 import { Detection } from "../Detection";
 import { detect as detectStraight } from "./Straight";
 import { detect as detectFlush } from "./Flush";
+import { HandType } from "../HandType";
 
 export const BaseValue = 8000;
 
@@ -14,13 +16,14 @@ export function detect(cards : Card[]) : Detection {
 	// Run both detections on the cards.
 	let flush = detectFlush(cards);
 	if (!flush.result)
-		return { result: false };
+		return { type: HandType.StraightFlush, result: false };
 
 	let straight = detectStraight(flush.cards!);
 	if (!straight.result)
-		return { result: false };
+		return { type: HandType.StraightFlush, result: false };
 
-	return { 
+	return {
+		type: HandType.StraightFlush,
 		result: true,
 		cards: straight.cards,
 		value: BaseValue + straight.cards![straight.cards!.length - 1].rank.value

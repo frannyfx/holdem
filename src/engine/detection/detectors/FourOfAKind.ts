@@ -1,5 +1,7 @@
+// Imports
 import { Card, groupCardsByRank } from "../../cards/Card";
 import { Detection } from "../Detection";
+import { HandType } from "../HandType";
 
 export const BaseValue = 7000;
 
@@ -11,7 +13,7 @@ export const BaseValue = 7000;
 export function detect(cards : Card[]) : Detection {
 	// Impossible to have a four-of-a-kind with less than 4 cards.
 	if (cards.length < 4) {
-		return { result: false };
+		return { type: HandType.FourOfAKind, result: false };
 	}
 
 	// Group the cards by rank.
@@ -26,12 +28,13 @@ export function detect(cards : Card[]) : Detection {
 		let sortedValues = fourSets.map(set => parseInt(set)).sort((a, b) => b - a);
 
 		return {
+			type: HandType.FourOfAKind,
 			result: true,
 			cards: rankGroups[sortedValues[0].toString()],
 			value: BaseValue + sortedValues[0]
 		}
 	}
 
-	return { result: false };
+	return { type: HandType.FourOfAKind, result: false };
 }
 

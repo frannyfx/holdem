@@ -1,5 +1,7 @@
+// Imports
 import { Card, groupCardsByRank } from "../../cards/Card";
 import { Detection } from "../Detection";
+import { HandType } from "../HandType";
 
 export const BaseValue = 3000;
 
@@ -11,7 +13,7 @@ export const BaseValue = 3000;
 export function detect(cards : Card[]) : Detection {
 	// Impossible to have a three-of-a-kind with less than 3 cards.
 	if (cards.length < 3) {
-		return { result: false };
+		return { type: HandType.ThreeOfAKind, result: false };
 	}
 
 	// Group the cards by rank.
@@ -23,12 +25,13 @@ export function detect(cards : Card[]) : Detection {
 		// Sort the sets and pick the highest
 		let sortedValues = sets.map(set => parseInt(set)).sort((a, b) => b - a);
 		return {
+			type: HandType.ThreeOfAKind,
 			result: true,
 			cards: rankGroups[sortedValues[0].toString()],
 			value: BaseValue + sortedValues[0]
 		};
 	}
 
-	return { result: false };
+	return { type: HandType.ThreeOfAKind, result: false };
 }
 

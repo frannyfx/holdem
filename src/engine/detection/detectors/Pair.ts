@@ -1,5 +1,7 @@
+// Imports
 import { Card, groupCardsByRank } from "../../cards/Card";
 import { Detection } from "../Detection";
+import { HandType } from "../HandType";
 
 export const BaseValue = 1000;
 
@@ -11,7 +13,7 @@ export const BaseValue = 1000;
 export function detect(cards : Card[]) : Detection {
 	// Impossible to have a pair with less than 2 cards.
 	if (cards.length < 2) {
-		return { result: false };
+		return { type: HandType.Pair, result: false };
 	}
 
 	// Group the cards by rank.
@@ -23,12 +25,13 @@ export function detect(cards : Card[]) : Detection {
 		// Sort the pairs and pick the highest.
 		let sortedValues = pairs.map(pair => parseInt(pair)).sort((a, b) => b - a);
 		return {
+			type: HandType.Pair,
 			result: true,
 			cards: rankGroups[sortedValues[0].toString()],
 			value: BaseValue + sortedValues[0]
 		};
 	}
 
-	return { result: false };
+	return { type: HandType.Pair, result: false };
 }
 

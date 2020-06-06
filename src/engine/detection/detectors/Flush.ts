@@ -1,5 +1,7 @@
+// Imports
 import { Card, groupCardsBySuit } from "../../cards/Card";
 import { Detection } from "../Detection";
+import { HandType } from "../HandType";
 
 export const BaseValue = 5000;
 
@@ -11,7 +13,7 @@ export const BaseValue = 5000;
 export function detect(cards : Card[]) : Detection {
 	// Impossible to have a flush with less than 5 cards.
 	if (cards.length < 5) {
-		return { result: false };
+		return { type: HandType.Flush, result: false };
 	}
 
 	// Group the cards by suit.
@@ -28,12 +30,13 @@ export function detect(cards : Card[]) : Detection {
 
 		// Pick first flush (there shouldn't be more than one).
 		return {
+			type: HandType.Flush,
 			result: true,
 			cards: flushCards,
 			value: BaseValue + flushCards[flushCards.length - 1].rank.value
 		};
 	}
 
-	return { result: false };
+	return { type: HandType.Flush, result: false };
 }
 

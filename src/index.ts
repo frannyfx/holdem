@@ -79,7 +79,7 @@ async function init() {
 //init();
 */
 
-import { detect } from "./engine/detection/detectors/HighCard";
+import { detect } from "./engine/detection";
 import { Ranks } from "./engine/cards/Rank";
 import { Suits } from "./engine/cards/Suit";
 
