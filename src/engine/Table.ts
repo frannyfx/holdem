@@ -16,8 +16,7 @@ export class Table {
 	private blindAmount: number;
 	private dealerIndex: number;
 
-	// Cards
-	private deck: Deck;
+	// Current hand
 	private hand: Hand | null;
 
 	constructor (maxSeats : number = 9, blindAmount: number) {
@@ -36,8 +35,7 @@ export class Table {
 		this.blindAmount = blindAmount;
 		this.dealerIndex = -1;
 		
-		// Cards
-		this.deck = new Deck();
+		// Current hand
 		this.hand = null;
 	}
 

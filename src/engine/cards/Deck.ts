@@ -41,10 +41,10 @@ export class Deck {
 		this.cards.sort(() => Math.random() - 0.5);
 	}
 
-	pick() {
+	pick() : Card | null {
 		if (this.cards.length == 0) {
 			console.log("Cannot pick a card from an empty deck.");
-			return;
+			return null;
 		}
 
 		let card = this.cards.splice(0, 1)[0];

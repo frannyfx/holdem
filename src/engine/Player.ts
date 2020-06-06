@@ -2,9 +2,6 @@
 import { v4 } from "uuid";
 import { Card } from "./cards/Card";
 
-// Define types
-type Hand = [Card, Card] | null;
-
 // Name generation
 const adjectives = ["Chich", "Atheist", "Quick", "Fast", "Hot", "Sexy", "Nice", "Floppy", "Wet", "Moist", "Neeky"];
 const nouns = ["Muck", "Win", "Call", "Bluff", "Booper", "Weed", "Bugzy", "Malone", "Flop", "Fintan"];
@@ -19,7 +16,6 @@ export class Player {
 	id: string;
 	name: String;
 	chips: number;
-	hand: Hand;
 	wantToPlay: Boolean;
 	roundBetAmount: number;
 
@@ -27,6 +23,10 @@ export class Player {
 	hasFolded: Boolean;
 	hasChecked: Boolean;
 	isAllIn: Boolean;
+
+	// Cards
+	cardA: Card | null;
+	cardB: Card | null;
 
 	constructor(name : String | null, chips : number) {
 		// Generate ID
@@ -39,7 +39,7 @@ export class Player {
 		this.chips = chips;
 		
 		// Set player status
-		this.hand = null;
+		this.cardA = this.cardB = null;
 		this.wantToPlay = true;
 		this.roundBetAmount = 0;
 
@@ -47,6 +47,13 @@ export class Player {
 		this.hasFolded = true;
 		this.hasChecked = false;
 		this.isAllIn = false;
+	}
+
+	setCards(cardA : Card, cardB : Card) {
+		this.cardA = cardA;
+		this.cardB = cardB;
+
+		console.log(`${this.name} has ${this.cardA}, ${this.cardB}.`);
 	}
 
 	fold() {

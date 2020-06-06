@@ -1,5 +1,6 @@
 import { Player } from "./Player";
 import { Action, Type as ActionType } from "./Action";
+import { Deck } from "./cards/Deck";
 
 export enum Status {
 	Waiting = 0,
@@ -32,6 +33,9 @@ export class Hand {
 	currentTurn: number;
 	currentBetAmount: number;
 	pot: number;
+	
+	// Cards
+	deck: Deck;
 
 	constructor(players : Player[], dealerIndex: number, bigBlindIndex : number, smallBlindIndex: number, blindAmount: number) {
 		this.stage = Stage.PreFlop;
@@ -44,6 +48,7 @@ export class Hand {
 		this.currentTurn = -1;
 		this.currentBetAmount = 0;
 		this.pot = 0;
+		this.deck = new Deck(true);
 	}
 
 	start() {
@@ -56,6 +61,7 @@ export class Hand {
 
 		// Reset all players.
 		this.resetPlayers(true);
+		this.dealCards();
 
 		// Make blinds player pay.
 		if (this.smallBlindIndex != -1) this.players[this.smallBlindIndex].bet(this.blindAmount);
@@ -72,6 +78,12 @@ export class Hand {
 
 			player.roundBetAmount = 0;
 			player.hasChecked = false;
+		});
+	}
+
+	private dealCards() {
+		this.players.map(player => {
+			player.setCards(this.deck.pick()!, this.deck.pick()!);
 		});
 	}
 

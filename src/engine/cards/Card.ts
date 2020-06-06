@@ -17,6 +17,10 @@ export class Card {
 	 * Output card correctly in console.log(Card).
 	 */
 	[util.inspect.custom]() {
+		return this.toString();
+	}
+
+	toString() {
 		return `${this.value.name} of ${this.suit.symbol}`;
 	}
 }
