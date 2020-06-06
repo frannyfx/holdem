@@ -19,11 +19,13 @@ export function detect(cards : Card[]) : Detection {
 
 	// Detect if any of the groups contain exactly 2 elements.
 	let pairs = Object.keys(rankGroups).filter(rankValue => rankGroups[rankValue].length == 2);
-	if (pairs.length == 1) {
+	if (pairs.length > 0) {
+		// Sort the pairs and pick the highest.
+		let sortedValues = pairs.map(pair => parseInt(pair)).sort((a, b) => b - a);
 		return {
 			result: true,
-			cards: rankGroups[pairs[0]],
-			value: BaseValue + parseInt(pairs[0])
+			cards: rankGroups[sortedValues[0].toString()],
+			value: BaseValue + sortedValues[0]
 		};
 	}
 
