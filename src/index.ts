@@ -17,9 +17,9 @@ const rl = readline.createInterface({
 
 // Create table
 let table = new Table(9, 2500);
-let player1 = new Player("player1", 100000);
-let player2 = new Player("player2", 100000);
-let player3 = new Player("player3", 100000);
+let player1 = new Player("Player 1", 100000);
+let player2 = new Player("Player 2", 100000);
+let player3 = new Player("Player 3", 100000);
 
 table.addPlayer(player1);
 table.addPlayer(player2);
@@ -31,7 +31,7 @@ function askForMove() {
 		let hand = table.getHand()!;
 		let currentPlayer = hand.getTurnPlayer();
 
-		rl.question(`${currentPlayer.name}:\n> `, command => {
+		rl.question(`\nCommand for ${currentPlayer.name}:\n> `, command => {
 			// Rudimentary command parser
 			let keywords = command.split(" ");
 			let action = keywords[0].trim().toLowerCase();
