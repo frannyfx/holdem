@@ -23,6 +23,7 @@ export class Player {
 	hasFolded: Boolean;
 	hasChecked: Boolean;
 	isAllIn: Boolean;
+	hasPlayed: Boolean;
 
 	// Cards
 	cardA: Card | null;
@@ -47,6 +48,7 @@ export class Player {
 		this.hasFolded = true;
 		this.hasChecked = false;
 		this.isAllIn = false;
+		this.hasPlayed = false;
 	}
 
 	setCards(cardA : Card, cardB : Card) {
@@ -60,11 +62,13 @@ export class Player {
 		this.hasFolded = true;
 		this.hasChecked = false;
 		this.isAllIn = false;
+		this.hasPlayed = true;
 		console.log(`${this.name} folded.`);
 	}
 
 	check() {
 		this.hasChecked = true;
+		this.hasPlayed = true;
 		console.log(`${this.name} checked.`);
 	}
 
@@ -72,6 +76,7 @@ export class Player {
 		this.isAllIn = true;
 		this.hasChecked = false;
 		this.hasFolded = false;
+		this.hasPlayed = true;
 		
 		let betSize = this.chips;
 		this.chips = 0;
@@ -81,6 +86,7 @@ export class Player {
 	bet(amount : number) {
 		this.chips -= amount;
 		this.roundBetAmount += amount;
+		this.hasPlayed = true;
 		console.log(`${this.name} bet ${amount}.`);
 	}
 

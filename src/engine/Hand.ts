@@ -68,6 +68,10 @@ export class Hand {
 		this.players[this.bigBlindIndex].bet(this.blindAmount * 2);
 	}
 
+	getTurnPlayer() : Player {
+		return this.players[this.currentTurn];
+	}
+
 	private resetPlayers(totalReset = false) {
 		this.players.map(player => {
 			// If we're completely resetting, remove permanent effects such as all-in and folding.
@@ -78,6 +82,7 @@ export class Hand {
 
 			player.roundBetAmount = 0;
 			player.hasChecked = false;
+			player.hasPlayed = false;
 		});
 	}
 
@@ -91,6 +96,10 @@ export class Hand {
 		// Advance the stage.
 		this.stage++;
 		console.log(`New stage: ${Stage[this.stage]}.`);
+		if (this.stage == Stage.Result) {
+			this.status = Status.Finished;
+			return;
+		}
 
 		// Reset players & bet amounts.
 		this.resetPlayers(false);
@@ -185,13 +194,11 @@ export class Hand {
 		// TODO: Side pots & all-ins.
 		let shouldGoToNextStage = true;
 		for (var i = 0; i < this.players.length; i++) {
-			if (this.players[i].roundBetAmount != this.currentBetAmount && !this.players[i].hasFolded && !this.players[i].isAllIn) {
+			if ((this.players[i].roundBetAmount != this.currentBetAmount || !this.players[i].hasPlayed) && !this.players[i].hasFolded && !this.players[i].isAllIn) {
 				shouldGoToNextStage = false;
 				break;
 			}
 		}
-
-		console.log(`Ready for next stage: ${shouldGoToNextStage}`);
 
 		if (shouldGoToNextStage) {
 			this.startNextStage();
