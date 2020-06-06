@@ -95,8 +95,13 @@ export class Hand {
 	private startNextStage() {
 		// Advance the stage.
 		this.stage++;
-		console.log(`New stage: ${Stage[this.stage]}.`);
-		if (this.stage == Stage.Result) {
+
+		// Count number of players still in the game (must end if all but one have folded)
+		let playersFolded = this.players.reduce<number>((previous, current, index) => previous + (current.hasFolded ? 1 : 0), 0);
+
+		// End the hand if we're either at the result stage or if we have only one player left (or less :/)
+		if (this.stage == Stage.Result || playersFolded >= this.players.length - 1) {
+			console.log("Show your cards!");
 			this.status = Status.Finished;
 			return;
 		}
@@ -107,6 +112,9 @@ export class Hand {
 
 		// Set the new turn to after the dealer.
 		this.currentTurn = (this.dealerIndex + 1) % this.players.length;
+
+		// Log the new stage
+		console.log(`New stage: ${Stage[this.stage]}.`);
 	}
 
 	takeTurn(player : Player, action : Action) {
