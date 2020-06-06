@@ -25,7 +25,6 @@ export class Deck {
 		for (let suit in Suits) {	
 			for (let value in Values) {
 				let card = new Card(Values[value], Suits[suit]);
-				console.log(card);
 				this.cards.push(card);
 			}
 		}
