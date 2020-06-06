@@ -40,7 +40,7 @@ export function detect(cards : Card[]) : Detection {
 	if (sortedDetections.length == 0) {
 		return {
 			type: HandType.None,
-			result: false
+			result: true
 		};
 	}
 
