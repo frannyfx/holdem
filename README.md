@@ -7,8 +7,9 @@ HoldEm is a Texas Holdem engine written in TypeScript.
 - [x] Chip system
 - [x] Basic Poker game progression
 - [x] Checking, Calling, Betting and Raising 
+- [x] Hand detection 
 - [ ] Hand strength calculation
-- [ ] Detection of winning hands
+- [ ] Determination of winning hands
 - [ ] All-ins and side pots
 
 ## Preview

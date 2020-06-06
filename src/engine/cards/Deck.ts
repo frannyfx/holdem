@@ -1,7 +1,7 @@
 // Imports
 import { Card } from "./Card"; 
 import { Suits } from "./Suit";
-import { Values } from "./Value"; 
+import { Ranks } from "./Rank"; 
 
 export class Deck {
 	private cards: Card[];
@@ -23,8 +23,8 @@ export class Deck {
 
 		// Loop through suits and values to fill the deck.
 		for (let suit in Suits) {	
-			for (let value in Values) {
-				let card = new Card(Values[value], Suits[suit]);
+			for (let rank in Ranks) {
+				let card = new Card(Ranks[rank], Suits[suit]);
 				this.cards.push(card);
 			}
 		}

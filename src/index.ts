@@ -3,12 +3,14 @@
  */
 
 // Imports
+import { Card } from "./engine/cards/Card";
 import { Deck } from "./engine/cards/Deck";
 import { Player } from "./engine/Player";
 import { Table } from "./engine/Table";
 import { Action, Type as ActionType} from "./engine/Action";
 
 // Handle input
+/*
 import readline from "readline";
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -74,9 +76,15 @@ async function init() {
 	await askForMove();
 }
 
-init();
+//init();
+*/
 
+import { detect } from "./engine/detection/detectors/RoyalFlush";
+import { Ranks } from "./engine/cards/Rank";
+import { Suits } from "./engine/cards/Suit";
 
+let detection = detect([new Card(Ranks.Ace, Suits.Clubs), new Card(Ranks.King, Suits.Clubs), new Card(Ranks.Queen, Suits.Clubs), new Card(Ranks.Jack, Suits.Clubs), new Card(Ranks.Ten, Suits.Clubs), new Card(Ranks.Nine, Suits.Clubs)])
+console.log(detection);
 
 /*
 table.getHand()!.takeTurn(player1, {
