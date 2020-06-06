@@ -29,7 +29,7 @@ describe('High card detection', () => {
 
 	let detection = detectHighCard(cards);
 
-    it('return false with 0 cards', () => {
+	it('return false with 0 cards', () => {
 		expect(detectHighCard([]).result).equal(false);
 	});
 	
@@ -67,7 +67,7 @@ describe('Pair detection', () => {
 	let detectionPair = detectPair(cardsPair);
 	let detectionNoPair = detectPair(cardsNoPair);
 
-    it('return false with less than 2 cards', () => {
+	it('return false with less than 2 cards', () => {
 		expect(detectPair(cardsPair.slice(0, 1)).result).equal(false);
 	});
 
@@ -118,7 +118,7 @@ describe('Two pair detection', () => {
 	let detectionOnePair = detectTwoPair(cardsOnePair);
 	let detectionNoPairs = detectTwoPair(cardsNoPairs);
 
-    it('return false with less than 4 cards', () => {
+	it('return false with less than 4 cards', () => {
 		expect(detectTwoPair(cardsTwoPairs.slice(0, 3)).result).equal(false);
 	});
 
