@@ -69,9 +69,10 @@ export class Hand {
 		this.resetPlayers(true);
 		this.dealCards();
 
-		// Make blinds player pay.
+		// Make blinds player pay, make sure the big blind player has "hasPlayed" set to false so they can check.
 		if (this.smallBlindIndex != -1) this.players[this.smallBlindIndex].bet(this.blindAmount);
 		this.players[this.bigBlindIndex].bet(this.blindAmount * 2);
+		this.players[this.bigBlindIndex].hasPlayed = false;
 	}
 
 	getTurnPlayer() : Player {

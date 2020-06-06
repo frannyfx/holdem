@@ -21,10 +21,12 @@ let table = new Table(9, 2500);
 let player1 = new Player("Player 1", 100000);
 let player2 = new Player("Player 2", 200000);
 let player3 = new Player("Player 3", 200000);
+let player4 = new Player("Player 4", 300000);
 
 table.addPlayer(player1);
 table.addPlayer(player2);
 table.addPlayer(player3);
+table.addPlayer(player4);
 
 function askForMove() {
 	return new Promise(resolve => {
