@@ -1,7 +1,7 @@
 {
   "name": "holdem",
   "version": "1.0.0",
-  "description": "Texas Holdem :)",
+  "description": "Texas Holdem engine written in TypeScript",
   "main": "src/index.js",
   "scripts": {
     "start": "tsc && node dist/index.js",
