@@ -10,9 +10,9 @@ export const BaseValue = 6000;
  * @param cards The array of cards to run the algorithm on.
  * @return A detection object.
  */
-export function detect(cards : Card[]) : Detection {
-	// Impossible to have a full house with less than 5 cards.
-	if (cards.length < 5) {
+export function detect(cards : Card[], cachedPair : Detection | null = null, cachedThreeOfAKind : Detection | null = null) : Detection {
+	// Impossible to have a full house with less than 5 cards, also check the cache to make sure there as a pair and a three of a kind available.
+	if (cards.length < 5 || (cachedPair != null && !cachedPair.result) || (cachedThreeOfAKind != null && !cachedThreeOfAKind.result)) {
 		return { type: HandType.FullHouse, result: false };
 	}
 

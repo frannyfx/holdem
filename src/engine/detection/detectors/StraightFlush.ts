@@ -12,13 +12,13 @@ export const BaseValue = 8000;
  * @param cards The array of cards to run the algorithm on.
  * @return A detection object.
  */
-export function detect(cards : Card[]) : Detection {
+export function detect(cards : Card[], cachedStraight : Detection | null = null, cachedFlush : Detection | null = null) : Detection {
 	// Run both detections on the cards.
-	let flush = detectFlush(cards);
+	let flush = cachedFlush ? cachedFlush : detectFlush(cards);
 	if (!flush.result)
 		return { type: HandType.StraightFlush, result: false };
 
-	let straight = detectStraight(flush.cards!);
+	let straight = cachedStraight ? cachedStraight : detectStraight(flush.cards!);
 	if (!straight.result)
 		return { type: HandType.StraightFlush, result: false };
 

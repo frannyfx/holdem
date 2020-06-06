@@ -22,17 +22,31 @@ import { Detection } from "./Detection";
 export function detect(cards : Card[]) : Detection {
 	// Run all detections.
 	// TODO: Optimise detections to prevent redundant checks.
+	// Cache has been disabled for now as it doesn't improve performance substantially.
+	let highCard = detectHighCard(cards);
+	let pair = detectPair(cards);
+	let twoPair = detectTwoPair(cards);
+	let threeOfAKind = detectThreeOfAKind(cards);
+	let straight = detectStraight(cards);
+	let flush = detectFlush(cards);
+	let fullHouse = detectFullHouse(cards/*, pair, threeOfAKind*/);
+	let fourOfAKind = detectFourOfAKind(cards);	// We have to check for four-of-a-kinds since three-of-a-kind will only return
+												// the highest three-of-a-kind available.
+	let straightFlush = detectStraightFlush(cards/*, straight, flush*/);
+	let royalFlush = detectRoyalFlush(cards/*, straightFlush*/);
+
+	// Put detections in an array to filter them.
 	let detections = [
-		detectHighCard(cards),
-		detectPair(cards),
-		detectTwoPair(cards),
-		detectThreeOfAKind(cards),
-		detectStraight(cards),
-		detectFlush(cards),
-		detectFullHouse(cards),
-		detectFourOfAKind(cards),
-		detectStraightFlush(cards),
-		detectRoyalFlush(cards)
+		highCard,
+		pair,
+		twoPair,
+		threeOfAKind,
+		straight,
+		flush,
+		fullHouse,
+		fourOfAKind,
+		straightFlush,
+		royalFlush
 	];
 
 	// Sort the detections and return HandType.None if no detections were successful.

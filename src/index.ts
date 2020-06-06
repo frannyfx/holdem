@@ -83,7 +83,7 @@ import { detect } from "./engine/detection";
 import { Ranks } from "./engine/cards/Rank";
 import { Suits } from "./engine/cards/Suit";
 
-let detection = detect([new Card(Ranks.Ace, Suits.Clubs), new Card(Ranks.King, Suits.Clubs), new Card(Ranks.Queen, Suits.Clubs), new Card(Ranks.Jack, Suits.Clubs), new Card(Ranks.Ten, Suits.Clubs), new Card(Ranks.Nine, Suits.Clubs)])
+let detection = detect([new Card(Ranks.Seven, Suits.Clubs), new Card(Ranks.Ace, Suits.Hearts), new Card(Ranks.Two, Suits.Hearts), new Card(Ranks.Three, Suits.Diamonds), new Card(Ranks.Four, Suits.Diamonds), new Card(Ranks.Nine, Suits.Diamonds)])
 console.log(detection);
 
 /*
