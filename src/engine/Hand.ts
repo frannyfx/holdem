@@ -114,15 +114,18 @@ export class Hand {
 
 		// End the hand if we're either at the result stage or if we have only one player left (or less :/)
 		if (this.stage == Stage.River || playersFolded >= this.players.length - 1) {
-			console.log("Show your cards!");
+			// TODO: Calculate best hand.
+			console.log("Done!");
 			this.status = Status.Finished;
 			return;
 		}
 
-		// Check if all players are either folded or all-in.
+		// Check if all players are either folded or all-in (apart from one).
 		let totalPlayersAllIn = this.players.reduce<number>((previous, current) => previous + (current.isAllIn ? 1 : 0), 0);
-		if (totalPlayersAllIn + playersFolded == this.players.length) {
+		if (totalPlayersAllIn + playersFolded >= this.players.length - 1) {
+			// TODO: Simulate the rest of the game.
 			console.log("Now simulating the rest of the game (no more turns).");
+			this.status = Status.Finished;
 			return;
 		}
 		
@@ -134,15 +137,25 @@ export class Hand {
 		this.resetPlayers(false);
 		this.currentBetAmount = 0;
 
-		// Set the new turn to after the dealer.
-		this.currentTurn = (this.dealerIndex + 1) % this.players.length;
-
 		// Get the players that are still active and add them to the next pot.
 		let activePlayers = this.currentPot.getActivePlayers();
 		if (activePlayers.length > 0 && this.currentPot.getNumAllInPlayers() > 0) {
 			console.log("New pot has been created.");
 			this.pots.push(this.currentPot);
 			this.currentPot = new Pot(activePlayers);
+			console.log(activePlayers);
+		}
+
+		// Set the new turn to after the dealer.
+		for (var i = 0; i < this.players.length - 1; i++) {
+			// Offset the index by the dealer index and add 1 to not include the dealer.
+			let j = (this.dealerIndex + i + 1) % this.players.length;
+
+			// Find the next person after the dealer who is in the current pot.
+			if (this.currentPot.players.indexOf(this.players[j]) != -1) {
+				this.currentTurn = j;
+				break;
+			}
 		}
 
 		// Log the new stage
@@ -214,6 +227,12 @@ export class Hand {
 				// Don't allow raising unless the player has enough money to raise.
 				if (player.chips < amountToRaise) {
 					console.log(`${player.name} cannot raise to ${action.amount!} as they don't have enough money.`);
+					return;
+				}
+
+				// Don't allow raising if everyone else in the pot is already all-in.
+				if (this.currentPot.getNumAllInPlayers() >= this.currentPot.players.length - 1) {
+					console.log(`${player.name} cannot raise as all the other players are already all in.`);
 					return;
 				}
 
